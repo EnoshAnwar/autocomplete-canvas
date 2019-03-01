@@ -85,7 +85,7 @@ function addClick(x, y, dragging) {
     clickDrag.push(dragging);
 }
 
-canvas.onmousedown = (e) => {
+function onMouseDown(e) {
     let mouseX = e.pageX;
     let mouseY = e.pageY;
 
@@ -93,7 +93,7 @@ canvas.onmousedown = (e) => {
     addClick(mouseX, mouseY, false);
 }
 
-canvas.onmousemove = (e) => {
+function onMouseMove(e) {
     let mouseX = e.pageX;
     let mouseY = e.pageY;
 
@@ -102,13 +102,29 @@ canvas.onmousemove = (e) => {
     }
 }
 
-canvas.onmouseup = (e) => {
+function onMouseUp(e) {
     paint = false;
 }
 
-canvas.onmouseleave = (e) => {
+function onMouseLeave(e) {
     paint = false;
 }
+
+canvas.onmousedown = onMouseDown;
+
+canvas.onmousemove = onMouseMove;
+
+canvas.onmouseup = onMouseUp;
+
+canvas.onmouseleave = onMouseLeave;
+
+canvas.ontouchstart = onMouseDown;
+
+canvas.ontouchmove = onMouseMove;
+
+canvas.ontouchend = onMouseUp;
+
+canvas.ontouchcancel = onMouseLeave;
 
 function init() {
     canvas.width = window.innerWidth;
