@@ -9,6 +9,7 @@ let paint;
 let minX, minY, maxX, maxY;
 
 let rectangles = [];
+let circles = [];
 
 function draw() {
     requestAnimationFrame(draw);
@@ -19,6 +20,8 @@ function draw() {
     ctx.lineWidth = 5;
 
     drawRectangles();
+
+    drawCircles();
 
     for (var i = 0; i < clickX.length; i++) {
         ctx.beginPath();
@@ -39,8 +42,28 @@ function drawRectangles() {
     }
 }
 
+function drawCircles() {
+    for (let i = 0; i < circles.length; i++) {
+        ctx.beginPath();
+        ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
+
 function onRectangleButtonClick() {
     convertToRectangle();
+}
+
+function onCircleButtonClick() {
+    convertToCircle();
+}
+
+function onLineButtonClick() {
+
+}
+
+function onTriangleButtonClick() {
+
 }
 
 function convertToRectangle() {
@@ -52,6 +75,23 @@ function convertToRectangle() {
         y: minY,
         width: maxX - minX,
         height: maxY - minY
+    });
+
+    clearTrackedValues();
+
+    clearSketchFromCanvas();
+}
+
+function convertToCircle() {
+    if (!minX || !minY || !maxX || !maxY)
+        return;
+
+    let r = ((maxX - minX) / 2 + (maxY - minY) / 2) / 2;
+
+    circles.push({
+        x: minX + r,
+        y: minY + r,
+        r
     });
 
     clearTrackedValues();
