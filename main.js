@@ -92,7 +92,7 @@ function onMouseDown(e) {
     paint = true;
     addClick(mouseX, mouseY, false);
 
-    return false;
+    e.preventDefault();
 }
 
 function onMouseMove(e) {
