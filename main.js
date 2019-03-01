@@ -7,21 +7,24 @@ let clickDrag = [];
 let paint;
 
 let minX, minY, maxX, maxY;
+let startX, startY, endX, endY;
 
 let rectangles = [];
 let circles = [];
+let lines = [];
 
 function draw() {
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clears the canvas
 
-    ctx.strokeStyle = "#df4b26";
-    ctx.lineJoin = "round";
+    ctx.strokeStyle = '#df4b26';
+    ctx.fillStyle = '#df4b26'
+    ctx.lineJoin = 'round';
     ctx.lineWidth = 5;
 
     drawRectangles();
-
     drawCircles();
+    drawLines();
 
     for (var i = 0; i < clickX.length; i++) {
         ctx.beginPath();
@@ -50,6 +53,15 @@ function drawCircles() {
     }
 }
 
+function drawLines() {
+    for (let i = 0; i < lines.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(lines[i].sx, lines[i].sy);
+        ctx.lineTo(lines[i].ex, lines[i].ey);
+        ctx.stroke();
+    }
+}
+
 function onRectangleButtonClick() {
     convertToRectangle();
 }
@@ -59,7 +71,7 @@ function onCircleButtonClick() {
 }
 
 function onLineButtonClick() {
-
+    convertToLine();
 }
 
 function onTriangleButtonClick() {
@@ -99,6 +111,22 @@ function convertToCircle() {
     clearSketchFromCanvas();
 }
 
+function convertToLine() {
+    if (!startX || !startY || !endX || !endY)
+        return;
+
+    lines.push({
+        sx: startX,
+        sy: startY,
+        ex: endX,
+        ey: endY
+    });
+
+    clearTrackedValues();
+
+    clearSketchFromCanvas();
+}
+
 function clearSketchFromCanvas() {
     clickX = [];
     clickY = [];
@@ -111,6 +139,10 @@ function clearTrackedValues() {
     maxX = null;
     minY = null;
     maxY = null;
+    startX = null;
+    startY = null;
+    endX = null;
+    endY = null;
 }
 
 function addClick(x, y, dragging) {
@@ -121,6 +153,10 @@ function addClick(x, y, dragging) {
     minY = minY ? Math.min(minY, y) : y;
     maxX = maxX ? Math.max(maxX, x) : x;
     maxY = maxY ? Math.max(maxY, y) : y;
+    startX = startX != null ? startX : x;
+    startY = startY != null ? startY : y;
+    endX = x;
+    endY = y;
 
     clickDrag.push(dragging);
 }
