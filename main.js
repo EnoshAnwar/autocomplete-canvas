@@ -120,13 +120,13 @@ canvas.onmouseup = onMouseUp;
 
 canvas.onmouseleave = onMouseLeave;
 
-canvas.ontouchstart = onMouseDown;
+// canvas.ontouchstart = onMouseDown;
 
-canvas.ontouchmove = onMouseMove;
+// canvas.ontouchmove = onMouseMove;
 
-canvas.ontouchend = onMouseUp;
+// canvas.ontouchend = onMouseUp;
 
-canvas.ontouchcancel = onMouseLeave;
+// canvas.ontouchcancel = onMouseLeave;
 
 function init() {
     canvas.width = window.innerWidth;
