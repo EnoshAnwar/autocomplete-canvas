@@ -13,6 +13,9 @@ let rectangles = [];
 let circles = [];
 let lines = [];
 
+let currColor = '';
+
+
 function draw() {
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clears the canvas
@@ -39,8 +42,15 @@ function draw() {
     }
 }
 
+function changeColor(color) {
+    ctx.strokeStyle = color; 
+    currColor = color; 
+}
+
 function drawRectangles() {
+
     for (let i = 0; i < rectangles.length; i++) {
+        ctx.fillStyle = rectangles[i].color;
         ctx.fillRect(rectangles[i].x, rectangles[i].y, rectangles[i].width, rectangles[i].height);
     }
 }
@@ -48,6 +58,7 @@ function drawRectangles() {
 function drawCircles() {
     for (let i = 0; i < circles.length; i++) {
         ctx.beginPath();
+        ctx.fillStyle = circles[i].color;
         ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
         ctx.fill();
     }
@@ -56,6 +67,7 @@ function drawCircles() {
 function drawLines() {
     for (let i = 0; i < lines.length; i++) {
         ctx.beginPath();
+        ctx.strokeStyle = lines[i].color;
         ctx.moveTo(lines[i].sx, lines[i].sy);
         ctx.lineTo(lines[i].ex, lines[i].ey);
         ctx.stroke();
@@ -86,7 +98,8 @@ function convertToRectangle() {
         x: minX,
         y: minY,
         width: maxX - minX,
-        height: maxY - minY
+        height: maxY - minY,
+        color: currColor
     });
 
     clearTrackedValues();
@@ -103,7 +116,8 @@ function convertToCircle() {
     circles.push({
         x: minX + r,
         y: minY + r,
-        r
+        r, 
+        color: currColor
     });
 
     clearTrackedValues();
@@ -119,7 +133,8 @@ function convertToLine() {
         sx: startX,
         sy: startY,
         ex: endX,
-        ey: endY
+        ey: endY,
+        color: currColor
     });
 
     clearTrackedValues();
