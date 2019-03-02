@@ -12,6 +12,7 @@ let startX, startY, endX, endY;
 let rectangles = [];
 let circles = [];
 let lines = [];
+let triangles = [];
 
 function draw() {
     requestAnimationFrame(draw);
@@ -25,6 +26,7 @@ function draw() {
     drawRectangles();
     drawCircles();
     drawLines();
+    drawTriangles();
 
     for (var i = 0; i < clickX.length; i++) {
         ctx.beginPath();
@@ -62,23 +64,18 @@ function drawLines() {
     }
 }
 
+function drawTriangles() {
+    for (let i = 0; i < triangles.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(triangles[i].p1x, triangles[i].p1y);
+        ctx.lineTo(triangles[i].p2x, triangles[i].p2y);
+        ctx.lineTo(triangles[i].p3x, triangles[i].p3y);
+        ctx.lineTo(triangles[i].p1x, triangles[i].p1y);
+        ctx.fill();
+    }
+}
+
 function onRectangleButtonClick() {
-    convertToRectangle();
-}
-
-function onCircleButtonClick() {
-    convertToCircle();
-}
-
-function onLineButtonClick() {
-    convertToLine();
-}
-
-function onTriangleButtonClick() {
-
-}
-
-function convertToRectangle() {
     if (!minX || !minY || !maxX || !maxY)
         return;
 
@@ -94,7 +91,7 @@ function convertToRectangle() {
     clearSketchFromCanvas();
 }
 
-function convertToCircle() {
+function onCircleButtonClick() {
     if (!minX || !minY || !maxX || !maxY)
         return;
 
@@ -111,7 +108,7 @@ function convertToCircle() {
     clearSketchFromCanvas();
 }
 
-function convertToLine() {
+function onLineButtonClick() {
     if (!startX || !startY || !endX || !endY)
         return;
 
@@ -120,6 +117,24 @@ function convertToLine() {
         sy: startY,
         ex: endX,
         ey: endY
+    });
+
+    clearTrackedValues();
+
+    clearSketchFromCanvas();
+}
+
+function onTriangleButtonClick() {
+    if (!minX || !minY || !maxX || !maxY)
+        return;
+
+    triangles.push({
+        p1x: minX,
+        p1y: maxY,
+        p2x: maxX,
+        p2y: maxY,
+        p3x: minX + ((maxX - minX) / 2),
+        p3y: minY
     });
 
     clearTrackedValues();
