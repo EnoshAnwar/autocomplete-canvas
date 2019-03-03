@@ -7,15 +7,33 @@
     <title>Gesture Based Drawing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
 </head>
 
 <body>
+
+
     <canvas id="canvas" width="100%" height="100%"></canvas>
+
+    <div class="d-flex justify-content-center">
+        <div class='m-1'>
+            <button type="button" class="btn btn-lg btn-danger active" onclick="changeColor('#C82333')"></button>
+            <button type="button" class="btn btn-lg btn-success" onclick="changeColor('#218838')"></button>
+            <button type="button" class="btn btn-lg btn-primary" onclick="changeColor('#0069D9')"></button>
+            <button type="button" class="btn btn-lg btn-warning" onclick="changeColor('#E0A800')"></button>
+            <button type="button" class="btn btn-lg btn-dark" onclick="changeColor('#23272B')"></button>
+        </div>
+    </div>
     
-    <button type="button" class="btn btn-light" onclick="onRectangleButtonClick()">Rectangle</button>
-    <button type="button" class="btn btn-light" onclick="onCircleButtonClick()">Circle</button>
-    <button type="button" class="btn btn-light" onclick="onLineButtonClick()">Line</button>
-    <button type="button" class="btn btn-light" onclick="onTriangleButtonClick()">Triangle</button>
+    <div class="d-flex justify-content-center">
+        <div class="m-1">
+            <button type="button" class="btn btn-sm btn-light" onclick="onRectangleButtonClick()">Rectangle</button>
+            <button type="button" class="btn btn-sm btn-light" onclick="onCircleButtonClick()">Circle</button>
+            <button type="button" class="btn btn-sm btn-light" onclick="onLineButtonClick()">Line</button>
+            <button type="button" class="btn btn-sm btn-light" onclick="onTriangleButtonClick()">Triangle</button>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>

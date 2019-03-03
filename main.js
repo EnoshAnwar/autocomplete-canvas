@@ -17,12 +17,19 @@ let circles = [];
 let lines = [];
 let triangles = [];
 
+let currColor = '';
+
+function changeColor(color) {
+    ctx.strokeStyle = color;
+    currColor = color;
+}
+
 function draw() {
+    setCanvasSize();
+
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clears the canvas before drawing every frame
 
-    ctx.strokeStyle = '#df4b26';    // stroke color
-    ctx.fillStyle = '#df4b26'       // fill color
     ctx.lineJoin = 'round';         // when drawing, make it look "smooth"
     ctx.lineWidth = 5;              // width of lines in pixels
 
@@ -31,6 +38,8 @@ function draw() {
     drawCircles();
     drawLines();
     drawTriangles();
+
+    ctx.strokeStyle = 'black';
 
     // draw "free draw" lines (probably dont need to touch this part)
     for (var i = 0; i < clickX.length; i++) {
@@ -44,11 +53,19 @@ function draw() {
         ctx.closePath();
         ctx.stroke();
     }
+
+}
+
+// sets the size of the canvas based on the screen size
+function setCanvasSize() {
+    ctx.canvas.width = window.innerWidth / 1.01;
+    ctx.canvas.height = window.innerHeight / 1.15;
 }
 
 // draw all rectangles
 function drawRectangles() {
     for (let i = 0; i < rectangles.length; i++) {
+        ctx.fillStyle = rectangles[i].color;
         ctx.fillRect(rectangles[i].x, rectangles[i].y, rectangles[i].width, rectangles[i].height);
     }
 }
@@ -57,6 +74,7 @@ function drawRectangles() {
 function drawCircles() {
     for (let i = 0; i < circles.length; i++) {
         ctx.beginPath();
+        ctx.fillStyle = circles[i].color;
         ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
         ctx.fill();
     }
@@ -66,6 +84,7 @@ function drawCircles() {
 function drawLines() {
     for (let i = 0; i < lines.length; i++) {
         ctx.beginPath();
+        ctx.strokeStyle = lines[i].color;
         ctx.moveTo(lines[i].sx, lines[i].sy);
         ctx.lineTo(lines[i].ex, lines[i].ey);
         ctx.stroke();
@@ -76,6 +95,7 @@ function drawLines() {
 function drawTriangles() {
     for (let i = 0; i < triangles.length; i++) {
         ctx.beginPath();
+        ctx.fillStyle = triangles[i].color;
         ctx.moveTo(triangles[i].p1x, triangles[i].p1y);
         ctx.lineTo(triangles[i].p2x, triangles[i].p2y);
         ctx.lineTo(triangles[i].p3x, triangles[i].p3y);
@@ -95,6 +115,7 @@ function onRectangleButtonClick() {
         y: minY,
         width: maxX - minX,
         height: maxY - minY,
+        color: currColor
     });
 
     clearTrackedValues();
@@ -114,6 +135,7 @@ function onCircleButtonClick() {
         x: minX + r,
         y: minY + r,
         r,
+        color: currColor
     });
 
     clearTrackedValues();
@@ -131,7 +153,8 @@ function onLineButtonClick() {
         sx: startX,
         sy: startY,
         ex: endX,
-        ey: endY
+        ey: endY,
+        color: currColor
     });
 
     clearTrackedValues();
@@ -151,7 +174,8 @@ function onTriangleButtonClick() {
         p2x: maxX,
         p2y: maxY,
         p3x: minX + ((maxX - minX) / 2),
-        p3y: minY
+        p3y: minY,
+        color: currColor
     });
 
     clearTrackedValues();
@@ -241,12 +265,62 @@ canvas.onmouseleave = onMouseLeave;
 // canvas.ontouchcancel = onMouseLeave;
 
 function init() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
+    setCanvasSize();
     clearTrackedValues();
 
     draw();
 }
+
+// Set up for touch events
+canvas.addEventListener("touchstart", function (e) {
+    mousePos = getTouchPos(canvas, e);
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousedown", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+}, false);
+
+canvas.addEventListener("touchend", function (e) {
+    const mouseEvent = new MouseEvent("mouseup", {});
+    canvas.dispatchEvent(mouseEvent);
+}, false);
+
+canvas.addEventListener("touchmove", function (e) {
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+}, false);
+
+// Get the position of a touch relative to the canvas
+function getTouchPos(canvasDom, touchEvent) {
+    const rect = canvasDom.getBoundingClientRect();
+    return {
+        x: touchEvent.touches[0].clientX - rect.left,
+        y: touchEvent.touches[0].clientY - rect.top
+    };
+}
+
+
+// Prevent scrolling when touching the canvas
+document.body.addEventListener("touchstart", function (e) {
+    if (e.target == canvas) {
+        e.preventDefault();
+    }
+}, false);
+document.body.addEventListener("touchend", function (e) {
+    if (e.target == canvas) {
+        e.preventDefault();
+    }
+}, false);
+document.body.addEventListener("touchmove", function (e) {
+    if (e.target == canvas) {
+        e.preventDefault();
+    }
+}, false);
 
 init();
