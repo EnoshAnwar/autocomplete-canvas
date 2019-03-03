@@ -19,6 +19,8 @@ let triangles = [];
 
 let currColor = 'black';
 
+const allDrawnShapes = [];
+
 function changeColor(color) {
     ctx.strokeStyle = color;
     currColor = color;
@@ -32,10 +34,12 @@ function draw() {
     ctx.lineWidth = 5;              // width of lines in pixels
 
     // draw geometry (when implementing bonus, we will probably have to combine into 1 data structure)
-    drawRectangles();
-    drawCircles();
-    drawLines();
-    drawTriangles();
+    // drawRectangles();
+    // drawCircles();
+    // drawLines();
+    // drawTriangles();
+    
+    drawShapes();
 
     ctx.strokeStyle = 'black';
 
@@ -54,6 +58,12 @@ function draw() {
 
 }
 
+function drawShapes(){
+    for (let shape of allDrawnShapes) {
+        shape.drawFunc(shape.data);
+    }
+}
+
 // sets the size of the canvas based on the screen size
 function setCanvasSize() {
     ctx.canvas.width = window.innerWidth / 1.01;
@@ -68,6 +78,11 @@ function drawRectangles() {
     }
 }
 
+function drawRectangle(rectangle) {
+    ctx.fillStyle = rectangle.color;
+    ctx.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+}
+
 // draw all circles
 function drawCircles() {
     for (let i = 0; i < circles.length; i++) {
@@ -76,6 +91,14 @@ function drawCircles() {
         ctx.arc(circles[i].x, circles[i].y, circles[i].r, 0, 2 * Math.PI);
         ctx.fill();
     }
+}
+
+// draw a circle
+function drawCircle(circle) {
+    ctx.beginPath();
+    ctx.fillStyle = circle.color;
+    ctx.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
+    ctx.fill();
 }
 
 // draw all lines
@@ -87,6 +110,15 @@ function drawLines() {
         ctx.lineTo(lines[i].ex, lines[i].ey);
         ctx.stroke();
     }
+}
+
+// draw a line
+function drawLine(line) {
+    ctx.beginPath();
+    ctx.strokeStyle = line.color;
+    ctx.moveTo(line.sx, line.sy);
+    ctx.lineTo(line.ex, line.ey);
+    ctx.stroke();
 }
 
 // draw all triangles (only simple triangles supported for now)
@@ -102,19 +134,44 @@ function drawTriangles() {
     }
 }
 
+// draw a triangle
+function drawTriangle(triangle) {
+    ctx.beginPath();
+    ctx.fillStyle = triangle.color;
+    ctx.moveTo(triangle.p1x, triangle.p1y);
+    ctx.lineTo(triangle.p2x, triangle.p2y);
+    ctx.lineTo(triangle.p3x, triangle.p3y);
+    ctx.lineTo(triangle.p1x, triangle.p1y);
+    ctx.fill();
+}
+
 // on clicking the rectangle button, convert current "drawing" to a rectangle
 // this function will clear the "drawing" and add a geometry to the rectangles array
 function onRectangleButtonClick() {
     if (!minX || !minY || !maxX || !maxY)
         return;
 
-    rectangles.push({
-        x: minX,
-        y: minY,
-        width: maxX - minX,
-        height: maxY - minY,
-        color: currColor
-    });
+    // rectangles.push({
+    //     shape: 'rectangle',
+    //     x: minX,
+    //     y: minY,
+    //     width: maxX - minX,
+    //     height: maxY - minY,
+    //     color: currColor
+    // });
+
+    allDrawnShapes.push(
+        {
+            drawFunc: drawRectangle,
+            data: {
+                shape: 'rectangle',
+                x: minX,
+                y: minY,
+                width: maxX - minX,
+                height: maxY - minY,
+                color: currColor
+            }
+        });
 
     clearTrackedValues();
 
@@ -129,12 +186,23 @@ function onCircleButtonClick() {
 
     let r = ((maxX - minX) / 2 + (maxY - minY) / 2) / 2;
 
-    circles.push({
-        x: minX + r,
-        y: minY + r,
-        r,
-        color: currColor
-    });
+    // circles.push({
+    //     x: minX + r,
+    //     y: minY + r,
+    //     r,
+    //     color: currColor
+    // });
+
+    allDrawnShapes.push(
+        {
+            drawFunc: drawCircle,
+            data: {
+                x: minX + r,
+                y: minY + r,
+                r,
+                color: currColor
+            }
+        });
 
     clearTrackedValues();
 
@@ -147,13 +215,25 @@ function onLineButtonClick() {
     if (!startX || !startY || !endX || !endY)
         return;
 
-    lines.push({
-        sx: startX,
-        sy: startY,
-        ex: endX,
-        ey: endY,
-        color: currColor
-    });
+    // lines.push({
+    //     sx: startX,
+    //     sy: startY,
+    //     ex: endX,
+    //     ey: endY,
+    //     color: currColor
+    // });
+
+    allDrawnShapes.push(
+        {
+            drawFunc: drawLine,
+            data: {
+                sx: startX,
+                sy: startY,
+                ex: endX,
+                ey: endY,
+                color: currColor
+            }
+        });
 
     clearTrackedValues();
 
@@ -166,15 +246,29 @@ function onTriangleButtonClick() {
     if (!minX || !minY || !maxX || !maxY)
         return;
 
-    triangles.push({
-        p1x: minX,
-        p1y: maxY,
-        p2x: maxX,
-        p2y: maxY,
-        p3x: minX + ((maxX - minX) / 2),
-        p3y: minY,
-        color: currColor
-    });
+    // triangles.push({
+    //     p1x: minX,
+    //     p1y: maxY,
+    //     p2x: maxX,
+    //     p2y: maxY,
+    //     p3x: minX + ((maxX - minX) / 2),
+    //     p3y: minY,
+    //     color: currColor
+    // });
+
+    allDrawnShapes.push(
+        {
+            drawFunc: drawTriangle,
+            data: {
+                p1x: minX,
+                p1y: maxY,
+                p2x: maxX,
+                p2y: maxY,
+                p3x: minX + ((maxX - minX) / 2),
+                p3y: minY,
+                color: currColor
+            }
+        });
 
     clearTrackedValues();
 
