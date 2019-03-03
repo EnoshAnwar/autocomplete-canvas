@@ -67,7 +67,7 @@ function drawShapes(){
 // sets the size of the canvas based on the screen size
 function setCanvasSize() {
     ctx.canvas.width = window.innerWidth / 1.01;
-    ctx.canvas.height = window.innerHeight / 1.15;
+    ctx.canvas.height = window.innerHeight / 1.31;
 }
 
 // draw all rectangles
