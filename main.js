@@ -19,7 +19,7 @@ let triangles = [];
 
 let currColor = 'black';
 
-const allDrawnShapes = [];
+let allDrawnShapes = [];
 
 function changeColor(color) {
     ctx.strokeStyle = color;
@@ -273,6 +273,13 @@ function onTriangleButtonClick() {
     clearTrackedValues();
 
     clearSketchFromCanvas();
+}
+
+// clear canvas on click
+function onClearButtonClick() {
+    clearSketchFromCanvas()
+    clearTrackedValues();
+    allDrawnShapes = [];
 }
 
 // clear "drawing" from the canvas
