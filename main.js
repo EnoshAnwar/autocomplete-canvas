@@ -17,7 +17,7 @@ let circles = [];
 let lines = [];
 let triangles = [];
 
-let currColor = '';
+let currColor = 'black';
 
 function changeColor(color) {
     ctx.strokeStyle = color;
@@ -25,8 +25,6 @@ function changeColor(color) {
 }
 
 function draw() {
-    setCanvasSize();
-
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clears the canvas before drawing every frame
 
