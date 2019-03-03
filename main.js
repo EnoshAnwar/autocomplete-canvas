@@ -270,7 +270,7 @@ function init() {
 }
 
 // Set up for touch events
-canvas.addEventListener("touchstart", function (e) {
+canvas.addEventListener("touchstart", (e) => {
     mousePos = getTouchPos(canvas, e);
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent("mousedown", {
@@ -280,12 +280,12 @@ canvas.addEventListener("touchstart", function (e) {
     canvas.dispatchEvent(mouseEvent);
 }, false);
 
-canvas.addEventListener("touchend", function (e) {
+canvas.addEventListener("touchend", (e) => {
     const mouseEvent = new MouseEvent("mouseup", {});
     canvas.dispatchEvent(mouseEvent);
 }, false);
 
-canvas.addEventListener("touchmove", function (e) {
+canvas.addEventListener("touchmove", (e) => {
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent("mousemove", {
         clientX: touch.clientX,
@@ -305,17 +305,19 @@ function getTouchPos(canvasDom, touchEvent) {
 
 
 // Prevent scrolling when touching the canvas
-document.body.addEventListener("touchstart", function (e) {
+document.body.addEventListener("touchstart", (e) => {
     if (e.target == canvas) {
         e.preventDefault();
     }
 }, false);
-document.body.addEventListener("touchend", function (e) {
+
+document.body.addEventListener("touchend", (e) => {
     if (e.target == canvas) {
         e.preventDefault();
     }
 }, false);
-document.body.addEventListener("touchmove", function (e) {
+
+document.body.addEventListener("touchmove", (e) => {
     if (e.target == canvas) {
         e.preventDefault();
     }

@@ -6,3 +6,57 @@ body {
 canvas {
     border: 1px solid black;
 }
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 13px 13px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 100%;
+}
+
+.black-button {
+    background-color: black;
+}
+
+.red-button {
+    background-color: #FF0000;
+}
+
+.blue-button {
+    background-color: #0074D9;
+}
+
+.green-button {
+    background-color: #2ECC40;
+}
+
+.aqua-button {
+    background-color: #7FDBFF;
+}
+
+.orange-button {
+    background-color: #FF851B;
+}
+
+.pink-button {
+    background-color: #F012BE;
+}
+
+.purple-button {
+    background-color: #B10DC9;
+}
+
+.yellow-button {
+    background-color: #FFDC00;
+}
+
+.teal-button {
+    background-color: #39CCCC;
+}
