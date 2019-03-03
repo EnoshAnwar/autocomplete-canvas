@@ -41,7 +41,7 @@ function draw() {
     
     drawShapes();
 
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = currColor;
 
     // draw "free draw" lines (probably dont need to touch this part)
     for (var i = 0; i < clickX.length; i++) {
