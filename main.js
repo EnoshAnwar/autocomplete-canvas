@@ -20,6 +20,10 @@ let triangles = [];
 let currColor = 'black';
 
 let allDrawnShapes = [];
+let currShapeIndex = 0;
+
+let isSelectMode = false;
+let selectBorderOffset = 0;
 
 function changeColor(color) {
     ctx.strokeStyle = color;
@@ -40,11 +44,12 @@ function draw() {
     // drawTriangles();
     
     drawShapes();
+    drawShapeSelection();
 
     ctx.strokeStyle = currColor;
 
     // draw "free draw" lines (probably dont need to touch this part)
-    for (var i = 0; i < clickX.length; i++) {
+    for (var i = 0; i < clickX.length && !isSelectMode; i++) {
         ctx.beginPath();
         if (clickDrag[i] && i) {
             ctx.moveTo(clickX[i - 1], clickY[i - 1]);
@@ -56,6 +61,14 @@ function draw() {
         ctx.stroke();
     }
 
+}
+
+function drawShapeSelection(){
+    if(isSelectMode){
+        const selectedShape = allDrawnShapes[currShapeIndex];
+        selectedShape.data.selected = true;
+        selectedShape.drawFunc(selectedShape.data);
+    }
 }
 
 function drawShapes(){
@@ -80,7 +93,13 @@ function drawRectangles() {
 
 function drawRectangle(rectangle) {
     ctx.fillStyle = rectangle.color;
-    ctx.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+
+    if(isSelectMode && rectangle.selected){
+        ctx.strokeStyle = "#FF0000";
+        ctx.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }else{
+        ctx.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }
 }
 
 // draw all circles
@@ -145,6 +164,15 @@ function drawTriangle(triangle) {
     ctx.fill();
 }
 
+function onSelectButtonClick() {
+    isSelectMode = true;
+}
+
+function onDeleteButtonClick() {
+    if(isSelectMode)
+        allDrawnShapes.splice(currShapeIndex, 1);
+}
+
 // on clicking the rectangle button, convert current "drawing" to a rectangle
 // this function will clear the "drawing" and add a geometry to the rectangles array
 function onRectangleButtonClick() {
@@ -160,8 +188,7 @@ function onRectangleButtonClick() {
     //     color: currColor
     // });
 
-    allDrawnShapes.push(
-        {
+    allDrawnShapes.push({
             drawFunc: drawRectangle,
             data: {
                 shape: 'rectangle',
@@ -169,9 +196,10 @@ function onRectangleButtonClick() {
                 y: minY,
                 width: maxX - minX,
                 height: maxY - minY,
-                color: currColor
+                color: currColor,
+                selected: false
             }
-        });
+    });
 
     clearTrackedValues();
 
@@ -200,7 +228,8 @@ function onCircleButtonClick() {
                 x: minX + r,
                 y: minY + r,
                 r,
-                color: currColor
+                color: currColor,
+                selected: false
             }
         });
 
@@ -231,7 +260,8 @@ function onLineButtonClick() {
                 sy: startY,
                 ex: endX,
                 ey: endY,
-                color: currColor
+                color: currColor,
+                selected: false
             }
         });
 
@@ -266,7 +296,8 @@ function onTriangleButtonClick() {
                 p2y: maxY,
                 p3x: minX + ((maxX - minX) / 2),
                 p3y: minY,
-                color: currColor
+                color: currColor,
+                selected: false
             }
         });
 
@@ -343,7 +374,30 @@ function onMouseMove(e) {
 
 // on mouse up, stop drawing
 function onMouseUp(e) {
+    if(isSelectMode)
+        selectObject();
     paint = false;
+}
+
+function selectObject(){
+    if(isSwipeRight() && allDrawnShapes.length > 0){
+        allDrawnShapes[currShapeIndex].data.selected = false;
+
+        if(currShapeIndex < allDrawnShapes.length - 1)
+            currShapeIndex++;
+         else 
+            currShapeIndex = 0;      
+    }
+}
+
+function isSwipeRight(){
+    let prevX = clickX[clickX.length - 2];
+    let currX = clickX[clickX.length - 1];
+
+    if(currX > prevX)
+        return true;
+
+    return false;
 }
 
 // on mouse up, stop drawing
