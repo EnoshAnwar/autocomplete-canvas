@@ -9,13 +9,11 @@
     <title>Gesture Based Drawing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-
-    <canvas id="canvas" width="100%" height="100%"></canvas>
 
     <div class="d-flex justify-content-center">
         <div class='m-1'>
@@ -37,14 +35,21 @@
         </div>
     </div>
 
+    <canvas id="canvas" width="100%" height="100%"></canvas>
+
     <div class="d-flex justify-content-center">
         <div class="m-1">
+            <img class="shape-button" src="icons/rectangle.png" onclick="onRectangleButtonClick()" width="45" height="45">
+            <img class="shape-button" src="icons/circle.png" onclick="onCircleButtonClick()" width="45" height="45">
+            <img class="shape-button" src="icons/triangle.png" onclick="onTriangleButtonClick()" width="45" height="45">
+            <img class="shape-button" src="icons/line.png" onclick="onLineButtonClick()" width="45" height="45">
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <div class="m-1 row">
             <button type="button" class="btn btn-light" onclick="onSelectButtonClick()">Select</button>
             <button type="button" class="btn btn-light" onclick="onDeleteButtonClick()">Delete</button>
-            <button type="button" class="btn btn-light" onclick="onRectangleButtonClick()">Rectangle</button>
-            <button type="button" class="btn btn-light" onclick="onCircleButtonClick()">Circle</button>
-            <button type="button" class="btn btn-light" onclick="onLineButtonClick()">Line</button>
-            <button type="button" class="btn btn-light" onclick="onTriangleButtonClick()">Triangle</button>
             <button type="button" class="btn btn-danger" onclick="onClearButtonClick()">Clear</button>
         </div>
     </div>

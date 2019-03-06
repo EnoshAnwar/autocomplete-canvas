@@ -11,6 +11,9 @@ let paint;
 let minX, minY, maxX, maxY;
 let startX, startY, endX, endY;
 
+// offset to adjust the canvas and drawings
+const yOffset = 85; 
+
 // converted geometry to draw
 let rectangles = [];
 let circles = [];
@@ -336,6 +339,8 @@ function clearTrackedValues() {
 // add another x,y position to "drawing"
 // probably dont need to touch anymore
 function addClick(x, y, dragging) {
+    y = y - yOffset;
+
     clickX.push(x);
     clickY.push(y);
 
