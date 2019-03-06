@@ -71,7 +71,8 @@ function draw() {
 }
 
 function drawShapeSelection(){
-    if(isDeleteMode){
+    if(isDeleteMode && allDrawnShapes.length > 0){
+        console.log(currShapeIndex);
         const selectedShape = allDrawnShapes[currShapeIndex];
         selectedShape.data.selected = true;
         selectedShape.drawFunc(selectedShape.data);
@@ -404,11 +405,11 @@ function onMouseMove(e) {
 // on mouse up, stop drawing
 function onMouseUp(e) {
     if(isDeleteMode)
-        selectObject();
+        deleteModeController();
     paint = false;
 }
 
-function selectObject(){
+function deleteModeController(){
     if(allDrawnShapes.length > 0){
         const lastShapeIndex = allDrawnShapes.length - 1;
         allDrawnShapes[currShapeIndex].data.selected = false;
@@ -425,14 +426,15 @@ function selectObject(){
                 currShapeIndex = lastShapeIndex;  
         } else if(isSwipeVertical()){
             allDrawnShapes.splice(currShapeIndex, 1);
+            if(currShapeIndex > 0) currShapeIndex--;
         }
     
     }
 }
 
 function isSwipeVertical() {
-    let prevY = clickY[clickX.length - 2];
-    let currY = clickY[clickX.length - 1];
+    let prevY = clickY[clickY.length - 2];
+    let currY = clickY[clickY.length - 1];
 
     if(currY != prevY)
         return true;
