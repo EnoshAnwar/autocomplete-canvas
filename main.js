@@ -1,7 +1,7 @@
 const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('canvas'));
 const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 
-const DELETE_SWIPE_DISTANCE = 200;
+const DELETE_SWIPE_DISTANCE = 150;
 
 // free draw on canvas variables
 let clickX = [];
