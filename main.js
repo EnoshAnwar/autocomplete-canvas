@@ -1,6 +1,8 @@
 const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('canvas'));
 const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 
+const DELETE_SWIPE_DISTANCE = 200;
+
 // free draw on canvas variables
 let clickX = [];
 let clickY = [];
@@ -414,7 +416,10 @@ function deleteModeController(){
         const lastShapeIndex = allDrawnShapes.length - 1;
         allDrawnShapes[currShapeIndex].data.selected = false;
 
-        if(isSwipeRight()){
+        if(isSwipeVertical()){
+            allDrawnShapes.splice(currShapeIndex, 1);
+            if(currShapeIndex > 0) currShapeIndex--;
+        } else if(isSwipeRight()){
             if(currShapeIndex != lastShapeIndex)
                 currShapeIndex++;
             else 
@@ -424,26 +429,28 @@ function deleteModeController(){
                 currShapeIndex--;
             else 
                 currShapeIndex = lastShapeIndex;  
-        } else if(isSwipeVertical()){
-            allDrawnShapes.splice(currShapeIndex, 1);
-            if(currShapeIndex > 0) currShapeIndex--;
-        }
-    
+        } 
+        
+        clearTrackedValues();
+        clearSketchFromCanvas();
     }
 }
 
 function isSwipeVertical() {
-    let prevY = clickY[clickY.length - 2];
+    let prevY = clickY[0];
     let currY = clickY[clickY.length - 1];
 
-    if(currY != prevY)
+    console.log(prevY);
+    console.log(currY);
+
+    if(Math.abs(currY - prevY) >= DELETE_SWIPE_DISTANCE)
         return true;
 
     return false;
 }
 
 function isSwipeRight(){
-    let prevX = clickX[clickX.length - 2];
+    let prevX = clickX[0];
     let currX = clickX[clickX.length - 1];
 
     if(currX > prevX)
@@ -453,7 +460,7 @@ function isSwipeRight(){
 }
 
 function isSwipeLeft(){
-    let prevX = clickX[clickX.length - 2];
+    let prevX = clickX[0];
     let currX = clickX[clickX.length - 1];
 
     if(currX < prevX)
