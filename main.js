@@ -25,10 +25,15 @@ let currColor = 'black';
 let allDrawnShapes = [];
 let currShapeIndex = 0;
 
-let isSelectMode = false;
-let selectBorderOffset = 0;
+let isDeleteMode = false;
 
 function changeColor(color) {
+    if(isDeleteMode){
+        isDeleteMode = false;
+        clearTrackedValues();
+        clearSketchFromCanvas();
+    }
+
     ctx.strokeStyle = color;
     currColor = color;
 }
@@ -52,7 +57,7 @@ function draw() {
     ctx.strokeStyle = currColor;
 
     // draw "free draw" lines (probably dont need to touch this part)
-    for (var i = 0; i < clickX.length && !isSelectMode; i++) {
+    for (var i = 0; i < clickX.length && !isDeleteMode; i++) {
         ctx.beginPath();
         if (clickDrag[i] && i) {
             ctx.moveTo(clickX[i - 1], clickY[i - 1]);
@@ -63,11 +68,10 @@ function draw() {
         ctx.closePath();
         ctx.stroke();
     }
-
 }
 
 function drawShapeSelection(){
-    if(isSelectMode){
+    if(isDeleteMode){
         const selectedShape = allDrawnShapes[currShapeIndex];
         selectedShape.data.selected = true;
         selectedShape.drawFunc(selectedShape.data);
@@ -97,7 +101,7 @@ function drawRectangles() {
 function drawRectangle(rectangle) {
     ctx.fillStyle = rectangle.color;
 
-    if(isSelectMode && rectangle.selected){
+    if(isDeleteMode && rectangle.selected){
         ctx.strokeStyle = "#FF0000";
         ctx.strokeRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }else{
@@ -167,18 +171,19 @@ function drawTriangle(triangle) {
     ctx.fill();
 }
 
-function onSelectButtonClick() {
-    isSelectMode = true;
-}
-
 function onDeleteButtonClick() {
-    if(isSelectMode)
-        allDrawnShapes.splice(currShapeIndex, 1);
+    isDeleteMode = true;
 }
 
 // on clicking the rectangle button, convert current "drawing" to a rectangle
 // this function will clear the "drawing" and add a geometry to the rectangles array
 function onRectangleButtonClick() {
+    if(isDeleteMode){
+        isDeleteMode = false;
+        clearTrackedValues();
+        clearSketchFromCanvas();
+    }
+
     if (!minX || !minY || !maxX || !maxY)
         return;
 
@@ -212,6 +217,12 @@ function onRectangleButtonClick() {
 // on clicking the circle button, convert current "drawing" to a circle
 // this function will clear the "drawing" and add a geometry to the circles array
 function onCircleButtonClick() {
+    if(isDeleteMode){
+        isDeleteMode = false;
+        clearTrackedValues();
+        clearSketchFromCanvas();
+    }
+
     if (!minX || !minY || !maxX || !maxY)
         return;
 
@@ -244,6 +255,12 @@ function onCircleButtonClick() {
 // on clicking the line button, convert current "drawing" to a line
 // this function will clear the "drawing" and add a geometry to the lines array
 function onLineButtonClick() {
+    if(isDeleteMode){
+        isDeleteMode = false;
+        clearTrackedValues();
+        clearSketchFromCanvas();
+    }
+
     if (!startX || !startY || !endX || !endY)
         return;
 
@@ -276,6 +293,12 @@ function onLineButtonClick() {
 // on clicking the triangle button, convert current "drawing" to a triangle
 // this function will clear the "drawing" and add a geometry to the triangles array
 function onTriangleButtonClick() {
+    if(isDeleteMode){
+        isDeleteMode = false;
+        clearTrackedValues();
+        clearSketchFromCanvas();
+    }
+
     if (!minX || !minY || !maxX || !maxY)
         return;
 
@@ -311,6 +334,7 @@ function onTriangleButtonClick() {
 
 // clear canvas on click
 function onClearButtonClick() {
+    isDeleteMode = false;
     clearSketchFromCanvas()
     clearTrackedValues();
     allDrawnShapes = [];
@@ -338,7 +362,7 @@ function clearTrackedValues() {
 
 // add another x,y position to "drawing"
 // probably dont need to touch anymore
-function addClick(x, y, dragging) {
+function addClick(x, y, dragging) {   
     y = y - yOffset;
 
     clickX.push(x);
@@ -379,20 +403,41 @@ function onMouseMove(e) {
 
 // on mouse up, stop drawing
 function onMouseUp(e) {
-    if(isSelectMode)
+    if(isDeleteMode)
         selectObject();
     paint = false;
 }
 
 function selectObject(){
-    if(isSwipeRight() && allDrawnShapes.length > 0){
+    if(allDrawnShapes.length > 0){
+        const lastShapeIndex = allDrawnShapes.length - 1;
         allDrawnShapes[currShapeIndex].data.selected = false;
 
-        if(currShapeIndex < allDrawnShapes.length - 1)
-            currShapeIndex++;
-         else 
-            currShapeIndex = 0;      
+        if(isSwipeRight()){
+            if(currShapeIndex != lastShapeIndex)
+                currShapeIndex++;
+            else 
+                currShapeIndex = 0;  
+        } else if(isSwipeLeft()){
+            if(currShapeIndex != 0)
+                currShapeIndex--;
+            else 
+                currShapeIndex = lastShapeIndex;  
+        } else if(isSwipeVertical()){
+            allDrawnShapes.splice(currShapeIndex, 1);
+        }
+    
     }
+}
+
+function isSwipeVertical() {
+    let prevY = clickY[clickX.length - 2];
+    let currY = clickY[clickX.length - 1];
+
+    if(currY != prevY)
+        return true;
+
+    return false;
 }
 
 function isSwipeRight(){
@@ -400,6 +445,16 @@ function isSwipeRight(){
     let currX = clickX[clickX.length - 1];
 
     if(currX > prevX)
+        return true;
+
+    return false;
+}
+
+function isSwipeLeft(){
+    let prevX = clickX[clickX.length - 2];
+    let currX = clickX[clickX.length - 1];
+
+    if(currX < prevX)
         return true;
 
     return false;
