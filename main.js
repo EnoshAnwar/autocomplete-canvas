@@ -1,7 +1,7 @@
 const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('canvas'));
 const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
 
-const DELETE_SWIPE_DISTANCE = 200;
+const DELETE_SWIPE_DISTANCE = 150;
 
 // free draw on canvas variables
 let clickX = [];
@@ -74,7 +74,6 @@ function draw() {
 
 function drawShapeSelection(){
     if(isDeleteMode && allDrawnShapes.length > 0){
-        console.log(currShapeIndex);
         const selectedShape = allDrawnShapes[currShapeIndex];
         selectedShape.data.selected = true;
         selectedShape.drawFunc(selectedShape.data);
@@ -125,9 +124,17 @@ function drawCircles() {
 // draw a circle
 function drawCircle(circle) {
     ctx.beginPath();
+
     ctx.fillStyle = circle.color;
+    if(isDeleteMode && circle.selected)
+        ctx.strokeStyle = "#FF0000";
+
     ctx.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
-    ctx.fill();
+
+    if(isDeleteMode && circle.selected)
+        ctx.stroke();
+    else
+        ctx.fill();
 }
 
 // draw all lines
@@ -144,7 +151,14 @@ function drawLines() {
 // draw a line
 function drawLine(line) {
     ctx.beginPath();
+    ctx.lineWidth = 5;
     ctx.strokeStyle = line.color;
+
+    if(isDeleteMode && line.selected){
+        ctx.lineWidth = 9;
+        ctx.strokeStyle = "#990000";
+    }
+
     ctx.moveTo(line.sx, line.sy);
     ctx.lineTo(line.ex, line.ey);
     ctx.stroke();
@@ -166,12 +180,20 @@ function drawTriangles() {
 // draw a triangle
 function drawTriangle(triangle) {
     ctx.beginPath();
+
     ctx.fillStyle = triangle.color;
+    if(isDeleteMode && triangle.selected)
+        ctx.strokeStyle = "#FF0000";
+
     ctx.moveTo(triangle.p1x, triangle.p1y);
     ctx.lineTo(triangle.p2x, triangle.p2y);
     ctx.lineTo(triangle.p3x, triangle.p3y);
     ctx.lineTo(triangle.p1x, triangle.p1y);
-    ctx.fill();
+
+    if(isDeleteMode && triangle.selected)
+        ctx.stroke();
+    else
+        ctx.fill();
 }
 
 function onDeleteButtonClick() {
